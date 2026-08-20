@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package document.v1;
+
+option go_package = "github.com/Khansa01/collaboration-app/be/internal/gen/document/v1;documentv1";
+
+import "google/protobuf/timestamp.proto";
+
+message Document {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string owner_id = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message CreateDocumentRequest {
+  string title = 1;
+}
+
+message CreateDocumentResponse {
+  Document document = 1;
+}
+
+message GetDocumentRequest {
+  string id = 1;
+}
+
+message GetDocumentResponse {
+  Document document = 1;
+}
+
+message ListDocumentsRequest {}
+
+message ListDocumentsResponse {
+  repeated Document documents = 1;
+}
+
+service DocumentService {
+  rpc CreateDocument(CreateDocumentRequest) returns (CreateDocumentResponse);
+  rpc GetDocument(GetDocumentRequest) returns (GetDocumentResponse);
+  rpc ListDocuments(ListDocumentsRequest) returns (ListDocumentsResponse);
+}

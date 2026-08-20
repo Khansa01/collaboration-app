@@ -1,0 +1,1 @@
+protoc --proto_path=proto --go_out=. --go_opt=module=github.com/Khansa01/collaboration-app/be --connect-go_out=. --connect-go_opt=module=github.com/Khansa01/collaboration-app/be proto/auth.proto proto/document.proto proto/collaboration.proto proto/presence.proto

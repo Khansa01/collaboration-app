@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package presence.v1;
+
+option go_package = "github.com/Khansa01/collaboration-app/be/internal/gen/presence/v1;presencev1";
+
+message UserPresence {
+  string user_id = 1;
+  string doc_id = 2;
+  string name = 3;
+  bool is_online = 4;
+  CursorPosition cursor = 5;
+}
+
+message CursorPosition {
+  int32 index = 1;
+  int32 length = 2;
+}
+
+message PresenceRequest {
+  string doc_id = 1;
+  UserPresence presence = 2;
+}
+
+message PresenceResponse {
+  repeated UserPresence users = 1;
+}
+
+service PresenceService {
+  rpc SyncPresence(stream PresenceRequest) returns (stream PresenceResponse);
+}

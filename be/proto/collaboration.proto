@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package collaboration.v1;
+
+option go_package = "github.com/Khansa01/collaboration-app/be/internal/gen/collaboration/v1;collaborationv1";
+
+message Operation {
+  string doc_id = 1;
+  string user_id = 2;
+  string op_type = 3;
+  bytes payload = 4;
+  int64 version = 5;
+}
+
+message OperationResponse {
+  bool success = 1;
+  int64 version = 2;
+}
+
+service CollaborationService {
+  rpc SyncDocument(stream Operation) returns (stream OperationResponse);
+}
