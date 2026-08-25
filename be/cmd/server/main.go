@@ -7,7 +7,9 @@ import (
 
 	"github.com/Khansa01/collaboration-app/be/internal/domain"
 	"github.com/Khansa01/collaboration-app/be/internal/gen/auth/v1/authv1connect"
+	collaborationv1connect "github.com/Khansa01/collaboration-app/be/internal/gen/collaboration/v1/collaborationv1connect"
 	"github.com/Khansa01/collaboration-app/be/internal/gen/document/v1/documentv1connect"
+	presencev1connect "github.com/Khansa01/collaboration-app/be/internal/gen/presence/v1/presencev1connect"
 	"github.com/Khansa01/collaboration-app/be/internal/handler"
 	"github.com/Khansa01/collaboration-app/be/internal/repository"
 	"github.com/Khansa01/collaboration-app/be/internal/service"
@@ -45,26 +47,41 @@ func main() {
 	userRepo := repository.NewUserRepository(db)
 	docRepo := repository.NewDocumentRepository(db)
 
+	// Hub
+	hub := service.NewHub()
+	presenceHub := service.NewPresenceHub()
+
 	// Service
 	authService := service.NewAuthService(userRepo)
 	docService := service.NewDocumentService(docRepo)
+	collabService := service.NewCollaborationService(hub, docRepo)
+	presenceService := service.NewPresenceService(presenceHub)
 
 	// Handler
 	authHandler := handler.NewAuthHandler(authService)
 	docHandler := handler.NewDocumentHandler(docService)
+	collabHandler := handler.NewCollaborationHandler(collabService)
+	presenceHandler := handler.NewPresenceHandler(presenceService)
 
 	// Router
 	mux := http.NewServeMux()
+
 	path, h := authv1connect.NewAuthServiceHandler(authHandler)
 	mux.Handle(path, h)
 
 	docPath, docH := documentv1connect.NewDocumentServiceHandler(docHandler)
 	mux.Handle(docPath, docH)
 
+	collabPath, collabH := collaborationv1connect.NewCollaborationServiceHandler(collabHandler)
+	mux.Handle(collabPath, collabH)
+
+	presencePath, presenceH := presencev1connect.NewPresenceServiceHandler(presenceHandler)
+	mux.Handle(presencePath, presenceH)
+
 	// Middleware chain
 	chain := corsMiddleware(middleware.JWTMiddleware(mux))
 
-	log.Println("Server running on :8080")
+	log.Println("Server running on http://localhost:8080")
 	if err := http.ListenAndServe(":8080", chain); err != nil {
 		log.Fatal(err)
 	}
