@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { authClient } from "../../lib/client";
 
 const Register = () => {
@@ -6,13 +7,19 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleRegister = async () => {
         try {
+            setLoading(true);
+            setError("");
             await authClient.register({ name, email, password });
-            window.location.href = "/login";
+            navigate("/login");
         } catch (err) {
             setError("Registrasi gagal, coba lagi!");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -49,9 +56,10 @@ const Register = () => {
 
                 <button
                     onClick={handleRegister}
-                    className="w-full p-3 bg-purple-600 text-white rounded hover:bg-purple-700"
+                    disabled={loading}
+                    className="w-full p-3 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50"
                 >
-                    Register
+                    {loading ? "Loading..." : "Register"}
                 </button>
 
                 <p className="text-gray-400 mt-4 text-center">

@@ -1,18 +1,27 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { authClient } from "../../lib/client";
+import useAuthStore from "../../store/authStore";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const { setToken } = useAuthStore();
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
+            setLoading(true);
+            setError("");
             const res = await authClient.login({ email, password });
-            localStorage.setItem("token", res.token);
-            window.location.href = "/dashboard";
+            setToken(res.token);
+            navigate("/dashboard");
         } catch (err) {
             setError("Email atau password salah!");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -41,9 +50,10 @@ const Login = () => {
 
                 <button
                     onClick={handleLogin}
-                    className="w-full p-3 bg-purple-600 text-white rounded hover:bg-purple-700"
+                    disabled={loading}
+                    className="w-full p-3 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50"
                 >
-                    Login
+                    {loading ? "Loading..." : "Login"}
                 </button>
 
                 <p className="text-gray-400 mt-4 text-center">

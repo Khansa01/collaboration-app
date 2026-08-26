@@ -362,6 +362,102 @@ func (x *ListDocumentsResponse) GetDocuments() []*Document {
 	return nil
 }
 
+type UpdateDocumentRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateDocumentRequest) Reset() {
+	*x = UpdateDocumentRequest{}
+	mi := &file_document_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateDocumentRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateDocumentRequest) ProtoMessage() {}
+
+func (x *UpdateDocumentRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_document_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateDocumentRequest.ProtoReflect.Descriptor instead.
+func (*UpdateDocumentRequest) Descriptor() ([]byte, []int) {
+	return file_document_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UpdateDocumentRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateDocumentRequest) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+type UpdateDocumentResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Document      *Document              `protobuf:"bytes,1,opt,name=document,proto3" json:"document,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateDocumentResponse) Reset() {
+	*x = UpdateDocumentResponse{}
+	mi := &file_document_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateDocumentResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateDocumentResponse) ProtoMessage() {}
+
+func (x *UpdateDocumentResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_document_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateDocumentResponse.ProtoReflect.Descriptor instead.
+func (*UpdateDocumentResponse) Descriptor() ([]byte, []int) {
+	return file_document_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *UpdateDocumentResponse) GetDocument() *Document {
+	if x != nil {
+		return x.Document
+	}
+	return nil
+}
+
 var File_document_proto protoreflect.FileDescriptor
 
 const file_document_proto_rawDesc = "" +
@@ -386,11 +482,17 @@ const file_document_proto_rawDesc = "" +
 	"\bdocument\x18\x01 \x01(\v2\x15.document.v1.DocumentR\bdocument\"\x16\n" +
 	"\x14ListDocumentsRequest\"L\n" +
 	"\x15ListDocumentsResponse\x123\n" +
-	"\tdocuments\x18\x01 \x03(\v2\x15.document.v1.DocumentR\tdocuments2\x96\x02\n" +
+	"\tdocuments\x18\x01 \x03(\v2\x15.document.v1.DocumentR\tdocuments\"A\n" +
+	"\x15UpdateDocumentRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\"K\n" +
+	"\x16UpdateDocumentResponse\x121\n" +
+	"\bdocument\x18\x01 \x01(\v2\x15.document.v1.DocumentR\bdocument2\xf1\x02\n" +
 	"\x0fDocumentService\x12Y\n" +
 	"\x0eCreateDocument\x12\".document.v1.CreateDocumentRequest\x1a#.document.v1.CreateDocumentResponse\x12P\n" +
 	"\vGetDocument\x12\x1f.document.v1.GetDocumentRequest\x1a .document.v1.GetDocumentResponse\x12V\n" +
-	"\rListDocuments\x12!.document.v1.ListDocumentsRequest\x1a\".document.v1.ListDocumentsResponseBNZLgithub.com/Khansa01/collaboration-app/be/internal/gen/document/v1;documentv1b\x06proto3"
+	"\rListDocuments\x12!.document.v1.ListDocumentsRequest\x1a\".document.v1.ListDocumentsResponse\x12Y\n" +
+	"\x0eUpdateDocument\x12\".document.v1.UpdateDocumentRequest\x1a#.document.v1.UpdateDocumentResponseBNZLgithub.com/Khansa01/collaboration-app/be/internal/gen/document/v1;documentv1b\x06proto3"
 
 var (
 	file_document_proto_rawDescOnce sync.Once
@@ -404,7 +506,7 @@ func file_document_proto_rawDescGZIP() []byte {
 	return file_document_proto_rawDescData
 }
 
-var file_document_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_document_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_document_proto_goTypes = []any{
 	(*Document)(nil),               // 0: document.v1.Document
 	(*CreateDocumentRequest)(nil),  // 1: document.v1.CreateDocumentRequest
@@ -413,25 +515,30 @@ var file_document_proto_goTypes = []any{
 	(*GetDocumentResponse)(nil),    // 4: document.v1.GetDocumentResponse
 	(*ListDocumentsRequest)(nil),   // 5: document.v1.ListDocumentsRequest
 	(*ListDocumentsResponse)(nil),  // 6: document.v1.ListDocumentsResponse
-	(*timestamppb.Timestamp)(nil),  // 7: google.protobuf.Timestamp
+	(*UpdateDocumentRequest)(nil),  // 7: document.v1.UpdateDocumentRequest
+	(*UpdateDocumentResponse)(nil), // 8: document.v1.UpdateDocumentResponse
+	(*timestamppb.Timestamp)(nil),  // 9: google.protobuf.Timestamp
 }
 var file_document_proto_depIdxs = []int32{
-	7, // 0: document.v1.Document.created_at:type_name -> google.protobuf.Timestamp
-	7, // 1: document.v1.Document.updated_at:type_name -> google.protobuf.Timestamp
-	0, // 2: document.v1.CreateDocumentResponse.document:type_name -> document.v1.Document
-	0, // 3: document.v1.GetDocumentResponse.document:type_name -> document.v1.Document
-	0, // 4: document.v1.ListDocumentsResponse.documents:type_name -> document.v1.Document
-	1, // 5: document.v1.DocumentService.CreateDocument:input_type -> document.v1.CreateDocumentRequest
-	3, // 6: document.v1.DocumentService.GetDocument:input_type -> document.v1.GetDocumentRequest
-	5, // 7: document.v1.DocumentService.ListDocuments:input_type -> document.v1.ListDocumentsRequest
-	2, // 8: document.v1.DocumentService.CreateDocument:output_type -> document.v1.CreateDocumentResponse
-	4, // 9: document.v1.DocumentService.GetDocument:output_type -> document.v1.GetDocumentResponse
-	6, // 10: document.v1.DocumentService.ListDocuments:output_type -> document.v1.ListDocumentsResponse
-	8, // [8:11] is the sub-list for method output_type
-	5, // [5:8] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	9,  // 0: document.v1.Document.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 1: document.v1.Document.updated_at:type_name -> google.protobuf.Timestamp
+	0,  // 2: document.v1.CreateDocumentResponse.document:type_name -> document.v1.Document
+	0,  // 3: document.v1.GetDocumentResponse.document:type_name -> document.v1.Document
+	0,  // 4: document.v1.ListDocumentsResponse.documents:type_name -> document.v1.Document
+	0,  // 5: document.v1.UpdateDocumentResponse.document:type_name -> document.v1.Document
+	1,  // 6: document.v1.DocumentService.CreateDocument:input_type -> document.v1.CreateDocumentRequest
+	3,  // 7: document.v1.DocumentService.GetDocument:input_type -> document.v1.GetDocumentRequest
+	5,  // 8: document.v1.DocumentService.ListDocuments:input_type -> document.v1.ListDocumentsRequest
+	7,  // 9: document.v1.DocumentService.UpdateDocument:input_type -> document.v1.UpdateDocumentRequest
+	2,  // 10: document.v1.DocumentService.CreateDocument:output_type -> document.v1.CreateDocumentResponse
+	4,  // 11: document.v1.DocumentService.GetDocument:output_type -> document.v1.GetDocumentResponse
+	6,  // 12: document.v1.DocumentService.ListDocuments:output_type -> document.v1.ListDocumentsResponse
+	8,  // 13: document.v1.DocumentService.UpdateDocument:output_type -> document.v1.UpdateDocumentResponse
+	10, // [10:14] is the sub-list for method output_type
+	6,  // [6:10] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_document_proto_init() }
@@ -445,7 +552,7 @@ func file_document_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_document_proto_rawDesc), len(file_document_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

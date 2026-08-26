@@ -42,6 +42,9 @@ const (
 	// DocumentServiceListDocumentsProcedure is the fully-qualified name of the DocumentService's
 	// ListDocuments RPC.
 	DocumentServiceListDocumentsProcedure = "/document.v1.DocumentService/ListDocuments"
+	// DocumentServiceUpdateDocumentProcedure is the fully-qualified name of the DocumentService's
+	// UpdateDocument RPC.
+	DocumentServiceUpdateDocumentProcedure = "/document.v1.DocumentService/UpdateDocument"
 )
 
 // DocumentServiceClient is a client for the document.v1.DocumentService service.
@@ -49,6 +52,7 @@ type DocumentServiceClient interface {
 	CreateDocument(context.Context, *connect.Request[v1.CreateDocumentRequest]) (*connect.Response[v1.CreateDocumentResponse], error)
 	GetDocument(context.Context, *connect.Request[v1.GetDocumentRequest]) (*connect.Response[v1.GetDocumentResponse], error)
 	ListDocuments(context.Context, *connect.Request[v1.ListDocumentsRequest]) (*connect.Response[v1.ListDocumentsResponse], error)
+	UpdateDocument(context.Context, *connect.Request[v1.UpdateDocumentRequest]) (*connect.Response[v1.UpdateDocumentResponse], error)
 }
 
 // NewDocumentServiceClient constructs a client for the document.v1.DocumentService service. By
@@ -80,6 +84,12 @@ func NewDocumentServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(documentServiceMethods.ByName("ListDocuments")),
 			connect.WithClientOptions(opts...),
 		),
+		updateDocument: connect.NewClient[v1.UpdateDocumentRequest, v1.UpdateDocumentResponse](
+			httpClient,
+			baseURL+DocumentServiceUpdateDocumentProcedure,
+			connect.WithSchema(documentServiceMethods.ByName("UpdateDocument")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -88,6 +98,7 @@ type documentServiceClient struct {
 	createDocument *connect.Client[v1.CreateDocumentRequest, v1.CreateDocumentResponse]
 	getDocument    *connect.Client[v1.GetDocumentRequest, v1.GetDocumentResponse]
 	listDocuments  *connect.Client[v1.ListDocumentsRequest, v1.ListDocumentsResponse]
+	updateDocument *connect.Client[v1.UpdateDocumentRequest, v1.UpdateDocumentResponse]
 }
 
 // CreateDocument calls document.v1.DocumentService.CreateDocument.
@@ -105,11 +116,17 @@ func (c *documentServiceClient) ListDocuments(ctx context.Context, req *connect.
 	return c.listDocuments.CallUnary(ctx, req)
 }
 
+// UpdateDocument calls document.v1.DocumentService.UpdateDocument.
+func (c *documentServiceClient) UpdateDocument(ctx context.Context, req *connect.Request[v1.UpdateDocumentRequest]) (*connect.Response[v1.UpdateDocumentResponse], error) {
+	return c.updateDocument.CallUnary(ctx, req)
+}
+
 // DocumentServiceHandler is an implementation of the document.v1.DocumentService service.
 type DocumentServiceHandler interface {
 	CreateDocument(context.Context, *connect.Request[v1.CreateDocumentRequest]) (*connect.Response[v1.CreateDocumentResponse], error)
 	GetDocument(context.Context, *connect.Request[v1.GetDocumentRequest]) (*connect.Response[v1.GetDocumentResponse], error)
 	ListDocuments(context.Context, *connect.Request[v1.ListDocumentsRequest]) (*connect.Response[v1.ListDocumentsResponse], error)
+	UpdateDocument(context.Context, *connect.Request[v1.UpdateDocumentRequest]) (*connect.Response[v1.UpdateDocumentResponse], error)
 }
 
 // NewDocumentServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -137,6 +154,12 @@ func NewDocumentServiceHandler(svc DocumentServiceHandler, opts ...connect.Handl
 		connect.WithSchema(documentServiceMethods.ByName("ListDocuments")),
 		connect.WithHandlerOptions(opts...),
 	)
+	documentServiceUpdateDocumentHandler := connect.NewUnaryHandler(
+		DocumentServiceUpdateDocumentProcedure,
+		svc.UpdateDocument,
+		connect.WithSchema(documentServiceMethods.ByName("UpdateDocument")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/document.v1.DocumentService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case DocumentServiceCreateDocumentProcedure:
@@ -145,6 +168,8 @@ func NewDocumentServiceHandler(svc DocumentServiceHandler, opts ...connect.Handl
 			documentServiceGetDocumentHandler.ServeHTTP(w, r)
 		case DocumentServiceListDocumentsProcedure:
 			documentServiceListDocumentsHandler.ServeHTTP(w, r)
+		case DocumentServiceUpdateDocumentProcedure:
+			documentServiceUpdateDocumentHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -164,4 +189,8 @@ func (UnimplementedDocumentServiceHandler) GetDocument(context.Context, *connect
 
 func (UnimplementedDocumentServiceHandler) ListDocuments(context.Context, *connect.Request[v1.ListDocumentsRequest]) (*connect.Response[v1.ListDocumentsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("document.v1.DocumentService.ListDocuments is not implemented"))
+}
+
+func (UnimplementedDocumentServiceHandler) UpdateDocument(context.Context, *connect.Request[v1.UpdateDocumentRequest]) (*connect.Response[v1.UpdateDocumentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("document.v1.DocumentService.UpdateDocument is not implemented"))
 }

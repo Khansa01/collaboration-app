@@ -37,8 +37,18 @@ message ListDocumentsResponse {
   repeated Document documents = 1;
 }
 
+message UpdateDocumentRequest {
+  string id = 1;
+  string content = 2;
+}
+
+message UpdateDocumentResponse {
+  Document document = 1;
+}
+
 service DocumentService {
   rpc CreateDocument(CreateDocumentRequest) returns (CreateDocumentResponse);
   rpc GetDocument(GetDocumentRequest) returns (GetDocumentResponse);
   rpc ListDocuments(ListDocumentsRequest) returns (ListDocumentsResponse);
+  rpc UpdateDocument(UpdateDocumentRequest) returns (UpdateDocumentResponse);
 }
