@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file document.proto.
  */
 export const file_document: GenFile = /*@__PURE__*/
-  fileDesc("Cg5kb2N1bWVudC5wcm90bxILZG9jdW1lbnQudjEiqAEKCERvY3VtZW50EgoKAmlkGAEgASgJEg0KBXRpdGxlGAIgASgJEg8KB2NvbnRlbnQYAyABKAkSEAoIb3duZXJfaWQYBCABKAkSLgoKY3JlYXRlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiJgoVQ3JlYXRlRG9jdW1lbnRSZXF1ZXN0Eg0KBXRpdGxlGAEgASgJIkEKFkNyZWF0ZURvY3VtZW50UmVzcG9uc2USJwoIZG9jdW1lbnQYASABKAsyFS5kb2N1bWVudC52MS5Eb2N1bWVudCIgChJHZXREb2N1bWVudFJlcXVlc3QSCgoCaWQYASABKAkiPgoTR2V0RG9jdW1lbnRSZXNwb25zZRInCghkb2N1bWVudBgBIAEoCzIVLmRvY3VtZW50LnYxLkRvY3VtZW50IhYKFExpc3REb2N1bWVudHNSZXF1ZXN0IkEKFUxpc3REb2N1bWVudHNSZXNwb25zZRIoCglkb2N1bWVudHMYASADKAsyFS5kb2N1bWVudC52MS5Eb2N1bWVudDKWAgoPRG9jdW1lbnRTZXJ2aWNlElkKDkNyZWF0ZURvY3VtZW50EiIuZG9jdW1lbnQudjEuQ3JlYXRlRG9jdW1lbnRSZXF1ZXN0GiMuZG9jdW1lbnQudjEuQ3JlYXRlRG9jdW1lbnRSZXNwb25zZRJQCgtHZXREb2N1bWVudBIfLmRvY3VtZW50LnYxLkdldERvY3VtZW50UmVxdWVzdBogLmRvY3VtZW50LnYxLkdldERvY3VtZW50UmVzcG9uc2USVgoNTGlzdERvY3VtZW50cxIhLmRvY3VtZW50LnYxLkxpc3REb2N1bWVudHNSZXF1ZXN0GiIuZG9jdW1lbnQudjEuTGlzdERvY3VtZW50c1Jlc3BvbnNlQk5aTGdpdGh1Yi5jb20vS2hhbnNhMDEvY29sbGFib3JhdGlvbi1hcHAvYmUvaW50ZXJuYWwvZ2VuL2RvY3VtZW50L3YxO2RvY3VtZW50djFiBnByb3RvMw", [file_google_protobuf_timestamp]);
+  fileDesc("Cg5kb2N1bWVudC5wcm90bxILZG9jdW1lbnQudjEiqAEKCERvY3VtZW50EgoKAmlkGAEgASgJEg0KBXRpdGxlGAIgASgJEg8KB2NvbnRlbnQYAyABKAkSEAoIb3duZXJfaWQYBCABKAkSLgoKY3JlYXRlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiJgoVQ3JlYXRlRG9jdW1lbnRSZXF1ZXN0Eg0KBXRpdGxlGAEgASgJIkEKFkNyZWF0ZURvY3VtZW50UmVzcG9uc2USJwoIZG9jdW1lbnQYASABKAsyFS5kb2N1bWVudC52MS5Eb2N1bWVudCIgChJHZXREb2N1bWVudFJlcXVlc3QSCgoCaWQYASABKAkiPgoTR2V0RG9jdW1lbnRSZXNwb25zZRInCghkb2N1bWVudBgBIAEoCzIVLmRvY3VtZW50LnYxLkRvY3VtZW50IhYKFExpc3REb2N1bWVudHNSZXF1ZXN0IkEKFUxpc3REb2N1bWVudHNSZXNwb25zZRIoCglkb2N1bWVudHMYASADKAsyFS5kb2N1bWVudC52MS5Eb2N1bWVudCI0ChVVcGRhdGVEb2N1bWVudFJlcXVlc3QSCgoCaWQYASABKAkSDwoHY29udGVudBgCIAEoCSJBChZVcGRhdGVEb2N1bWVudFJlc3BvbnNlEicKCGRvY3VtZW50GAEgASgLMhUuZG9jdW1lbnQudjEuRG9jdW1lbnQy8QIKD0RvY3VtZW50U2VydmljZRJZCg5DcmVhdGVEb2N1bWVudBIiLmRvY3VtZW50LnYxLkNyZWF0ZURvY3VtZW50UmVxdWVzdBojLmRvY3VtZW50LnYxLkNyZWF0ZURvY3VtZW50UmVzcG9uc2USUAoLR2V0RG9jdW1lbnQSHy5kb2N1bWVudC52MS5HZXREb2N1bWVudFJlcXVlc3QaIC5kb2N1bWVudC52MS5HZXREb2N1bWVudFJlc3BvbnNlElYKDUxpc3REb2N1bWVudHMSIS5kb2N1bWVudC52MS5MaXN0RG9jdW1lbnRzUmVxdWVzdBoiLmRvY3VtZW50LnYxLkxpc3REb2N1bWVudHNSZXNwb25zZRJZCg5VcGRhdGVEb2N1bWVudBIiLmRvY3VtZW50LnYxLlVwZGF0ZURvY3VtZW50UmVxdWVzdBojLmRvY3VtZW50LnYxLlVwZGF0ZURvY3VtZW50UmVzcG9uc2VCTlpMZ2l0aHViLmNvbS9LaGFuc2EwMS9jb2xsYWJvcmF0aW9uLWFwcC9iZS9pbnRlcm5hbC9nZW4vZG9jdW1lbnQvdjE7ZG9jdW1lbnR2MWIGcHJvdG8z", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message document.v1.Document
@@ -155,6 +155,45 @@ export const ListDocumentsResponseSchema: GenMessage<ListDocumentsResponse> = /*
   messageDesc(file_document, 6);
 
 /**
+ * @generated from message document.v1.UpdateDocumentRequest
+ */
+export type UpdateDocumentRequest = Message<"document.v1.UpdateDocumentRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string content = 2;
+   */
+  content: string;
+};
+
+/**
+ * Describes the message document.v1.UpdateDocumentRequest.
+ * Use `create(UpdateDocumentRequestSchema)` to create a new message.
+ */
+export const UpdateDocumentRequestSchema: GenMessage<UpdateDocumentRequest> = /*@__PURE__*/
+  messageDesc(file_document, 7);
+
+/**
+ * @generated from message document.v1.UpdateDocumentResponse
+ */
+export type UpdateDocumentResponse = Message<"document.v1.UpdateDocumentResponse"> & {
+  /**
+   * @generated from field: document.v1.Document document = 1;
+   */
+  document?: Document | undefined;
+};
+
+/**
+ * Describes the message document.v1.UpdateDocumentResponse.
+ * Use `create(UpdateDocumentResponseSchema)` to create a new message.
+ */
+export const UpdateDocumentResponseSchema: GenMessage<UpdateDocumentResponse> = /*@__PURE__*/
+  messageDesc(file_document, 8);
+
+/**
  * @generated from service document.v1.DocumentService
  */
 export const DocumentService: GenService<{
@@ -181,6 +220,14 @@ export const DocumentService: GenService<{
     methodKind: "unary";
     input: typeof ListDocumentsRequestSchema;
     output: typeof ListDocumentsResponseSchema;
+  },
+  /**
+   * @generated from rpc document.v1.DocumentService.UpdateDocument
+   */
+  updateDocument: {
+    methodKind: "unary";
+    input: typeof UpdateDocumentRequestSchema;
+    output: typeof UpdateDocumentResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_document, 0);

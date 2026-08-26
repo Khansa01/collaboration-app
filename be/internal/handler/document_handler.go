@@ -81,3 +81,19 @@ func (h *DocumentHandler) ListDocuments(ctx context.Context, req *connect.Reques
 		Documents: result,
 	}), nil
 }
+
+func (h *DocumentHandler) UpdateDocument(ctx context.Context, req *connect.Request[documentv1.UpdateDocumentRequest]) (*connect.Response[documentv1.UpdateDocumentResponse], error) {
+	doc, err := h.docService.UpdateDocument(ctx, req.Msg.Id, []byte(req.Msg.Content))
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	return connect.NewResponse(&documentv1.UpdateDocumentResponse{
+		Document: &documentv1.Document{
+			Id:      doc.ID,
+			Title:   doc.Title,
+			Content: string(doc.Content),
+			OwnerId: doc.OwnerID,
+		},
+	}), nil
+}
