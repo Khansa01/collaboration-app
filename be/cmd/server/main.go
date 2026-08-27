@@ -19,6 +19,12 @@ import (
 
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Skip CORS for WebSocket
+		if r.Header.Get("Upgrade") == "websocket" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Connect-Protocol-Version, Connect-Timeout-Ms, X-User-ID, Authorization")
@@ -49,6 +55,8 @@ func main() {
 
 	// Hub
 	hub := service.NewHub()
+	wsHub := handler.NewWSHub()
+	wsHandler := handler.NewWebSocketHandler(wsHub)
 	presenceHub := service.NewPresenceHub()
 
 	// Service
@@ -77,6 +85,7 @@ func main() {
 
 	presencePath, presenceH := presencev1connect.NewPresenceServiceHandler(presenceHandler)
 	mux.Handle(presencePath, presenceH)
+	mux.Handle("/ws/", wsHandler)
 
 	// Middleware chain
 	chain := corsMiddleware(middleware.JWTMiddleware(mux))

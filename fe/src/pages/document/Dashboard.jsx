@@ -13,7 +13,7 @@ const Dashboard = () => {
     const fetchDocuments = async () => {
         try {
             const res = await documentClient.listDocuments({});
-            setDocuments(res.documents);
+            setDocuments(res.documents || []);
         } catch (err) {
             console.error(err);
         }
@@ -41,51 +41,68 @@ const Dashboard = () => {
     }, [token]);
 
     return (
-        <div className="min-h-screen bg-gray-900 p-8">
-            <div className="max-w-4xl mx-auto">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-white text-3xl font-bold">My Documents</h1>
-                    <button
-                        onClick={logout}
-                        className="text-gray-400 hover:text-white"
-                    >
-                        Logout
-                    </button>
-                </div>
+        <div className="min-h-screen" style={{ backgroundColor: "#F6F6F6" }}>
+            {/* Navbar */}
+            <div className="px-8 py-4 flex items-center justify-between" style={{ backgroundColor: "#303030" }}>
+                <h1 className="text-xl font-bold" style={{ color: "#CBE86A" }}>
+                    Collabify
+                </h1>
+                <button
+                    onClick={logout}
+                    className="text-sm font-medium px-4 py-2 rounded-lg transition"
+                    style={{ color: "#CBE86A" }}
+                >
+                    Sign out
+                </button>
+            </div>
 
-                <div className="flex gap-4 mb-8">
+            {/* Content */}
+            <div className="max-w-4xl mx-auto px-8 py-12">
+                <h2 className="text-3xl font-bold mb-2" style={{ color: "#303030" }}>My Documents</h2>
+                <p className="mb-8 text-sm" style={{ color: "#9E9E9E" }}>Create and collaborate on documents in real-time</p>
+
+                {/* Create Document */}
+                <div className="flex gap-3 mb-10">
                     <input
                         type="text"
-                        placeholder="Nama dokumen baru..."
+                        placeholder="New document name..."
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="flex-1 p-3 rounded bg-gray-700 text-white"
+                        onKeyDown={(e) => e.key === "Enter" && createDocument()}
+                        className="flex-1 p-3 rounded-lg border outline-none"
+                        style={{ backgroundColor: "#fff", borderColor: "#E4E4E4", color: "#303030" }}
                     />
                     <button
                         onClick={createDocument}
                         disabled={loading}
-                        className="px-6 py-3 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50"
+                        className="px-6 py-3 rounded-lg font-semibold transition disabled:opacity-50"
+                        style={{ backgroundColor: "#CBE86A", color: "#303030" }}
                     >
-                        {loading ? "..." : "+ Buat Dokumen"}
+                        {loading ? "..." : "+ New"}
                     </button>
                 </div>
 
-                <div className="grid gap-4">
-                    {documents.length === 0 && (
-                        <p className="text-gray-400 text-center py-8">
-                            Belum ada dokumen — buat yang pertama!
-                        </p>
-                    )}
-                    {documents.map((doc) => (
-                        <div
-                            key={doc.id}
-                            onClick={() => navigate(`/document/${doc.id}`)}
-                            className="bg-gray-800 p-6 rounded-lg cursor-pointer hover:bg-gray-700 transition"
-                        >
-                            <h2 className="text-white text-xl font-semibold">{doc.title}</h2>
-                        </div>
-                    ))}
-                </div>
+                {/* Document List */}
+                {documents.length === 0 ? (
+                    <div className="text-center py-20">
+                        <p className="text-4xl mb-4">📄</p>
+                        <p className="font-medium mb-1" style={{ color: "#303030" }}>No documents yet</p>
+                        <p className="text-sm" style={{ color: "#9E9E9E" }}>Create your first document above</p>
+                    </div>
+                ) : (
+                    <div className="grid gap-3">
+                        {documents.map((doc) => (
+                            <div
+                                key={doc.id}
+                                onClick={() => navigate(`/document/${doc.id}`)}
+                                className="p-5 rounded-xl border cursor-pointer transition hover:shadow-md"
+                                style={{ backgroundColor: "#fff", borderColor: "#E4E4E4", borderLeft: "4px solid #CBE86A" }}
+                            >
+                                <h3 className="font-semibold" style={{ color: "#303030" }}>{doc.title}</h3>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );
