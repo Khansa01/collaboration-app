@@ -5,12 +5,15 @@ import (
 	"net/http"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/websocket"
 )
 
 var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
@@ -113,10 +116,27 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Write pump
 	go func() {
-		defer conn.Close()
-		for msg := range client.send {
-			if err := conn.WriteMessage(websocket.BinaryMessage, msg); err != nil {
-				return
+		ticker := time.NewTicker(30 * time.Second)
+		defer func() {
+			ticker.Stop()
+			conn.Close()
+		}()
+		for {
+			select {
+			case msg, ok := <-client.send:
+				conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+				if !ok {
+					conn.WriteMessage(websocket.CloseMessage, []byte{})
+					return
+				}
+				if err := conn.WriteMessage(websocket.BinaryMessage, msg); err != nil {
+					return
+				}
+			case <-ticker.C:
+				conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+				if err := conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+					return
+				}
 			}
 		}
 	}()
@@ -127,6 +147,12 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		close(client.send)
 		conn.Close()
 	}()
+
+	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	conn.SetPongHandler(func(string) error {
+		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		return nil
+	})
 
 	for {
 		_, msg, err := conn.ReadMessage()

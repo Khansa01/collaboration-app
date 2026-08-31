@@ -7,6 +7,7 @@ import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import { documentClient } from "../../lib/client";
 import useAuthStore from "../../store/authStore";
+import PresenceAvatars from "../../components/PresenceAvatars";
 
 const WS_URL = import.meta.env.VITE_WS_URL ?? "ws://localhost:8080";
 
@@ -29,6 +30,9 @@ const Editor = () => {
             ydoc,
             {
                 params: { token: token || "" },
+                connect: true,
+                resyncInterval: 5000,   // resync tiap 5 detik kalau ada gap
+                maxBackoffTime: 10000,  // max reconnect delay 10 detik
             }
         );
 
@@ -120,6 +124,7 @@ const Editor = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
+                    <PresenceAvatars docId={id} />
                     <span
                         className="text-xs px-3 py-1 rounded-full font-medium"
                         style={{
