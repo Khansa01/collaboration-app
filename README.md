@@ -1,60 +1,107 @@
-# Collaboration App
+# Collabify
 
-A real-time document collaboration tool built with modern technologies.
+A real-time collaborative document editor built with Go, gRPC, WebSocket, and React.
 
-## Tech Stack
+🔗 **Live Demo**: [collaboration-app-by-khansa.vercel.app](https://collaboration-app-by-khansa.vercel.app)
 
-**Frontend**
-
-- React + Vite
-- TailwindCSS
-- Connect-Web (gRPC)
-- Yjs (CRDT for real-time sync)
-
-**Backend**
-
-- Golang
-- gRPC (Connect-Go)
-- PostgreSQL (Supabase)
-
-**Infrastructure**
-
-- Railway (Backend)
-- Vercel (Frontend)
-- Supabase (Database)
+---
 
 ## Features
 
-- 🔐 Authentication (Register & Login)
-- 📄 Create & manage documents
-- ✏️ Real-time collaborative editing
-- 👥 Presence indicator (see who's online)
-- 🖱️ Live cursor tracking
+- 📝 Real-time collaborative editing (Yjs + WebSocket)
+- 👥 Presence indicator — see who's online in a document
+- 💾 Auto-save — changes saved automatically after 2 seconds
+- 🔐 Authentication with JWT
+- 📄 Document CRUD
 
-## Architecture
+---
 
-FE (React Vite) → Connect-Web → BE (Golang + gRPC) → PostgreSQL
+## Tech Stack
+
+| Layer    | Technology                              |
+| -------- | --------------------------------------- |
+| Frontend | React + Vite, TipTap, Yjs, Tailwind CSS |
+| Backend  | Go, gRPC (ConnectRPC), WebSocket        |
+| Database | PostgreSQL (Supabase)                   |
+| Deploy   | Vercel (FE), Railway (BE)               |
+
+---
+
+## Project Structure
+
+collaboration-app/
+├── fe/ # React Vite frontend
+└── be/ # Go backend
+
+---
 
 ## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- Go 1.25+
+- PostgreSQL (or Supabase account)
+
+### Frontend
+
+```bash
+cd fe
+npm install
+cp .env.example .env
+npm run dev
+```
+
+`.env`:
+
+VITE_API_URL=http://localhost:8080
+VITE_WS_URL=ws://localhost:8080
 
 ### Backend
 
 ```bash
 cd be
 cp .env.example .env
+go mod download
 go run cmd/server/main.go
 ```
 
-### Frontend
+`.env`:
+
+DB_HOST=
+DB_PORT=5432
+DB_NAME=postgres
+DB_USER=
+DB_PASSWORD=
+JWT_SECRET=
+
+### Docker (Backend)
 
 ```bash
-cd fe
-cp .env.example .env
-npm install
-npm run dev
+cd be
+docker build -t collabify-be .
+docker run -p 8080:8080 --env-file .env collabify-be
 ```
 
-## Live Demo
+---
 
-- Frontend: Coming soon
-- Backend: https://collaboration-app.up.railway.app
+## Deployment
+
+| Service  | Platform | URL                                                                                      |
+| -------- | -------- | ---------------------------------------------------------------------------------------- |
+| Frontend | Vercel   | [collaboration-app-by-khansa.vercel.app](https://collaboration-app-by-khansa.vercel.app) |
+| Backend  | Railway  | collaboration-app.up.railway.app                                                         |
+| Database | Supabase | PostgreSQL                                                                               |
+
+---
+
+## API
+
+- **gRPC (ConnectRPC)** — Auth, Document, Presence services
+- **WebSocket** — `/ws/{docId}?token=<jwt>` for real-time collaboration
+
+---
+
+## License
+
+MIT

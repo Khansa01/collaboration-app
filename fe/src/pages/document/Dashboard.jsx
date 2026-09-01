@@ -43,7 +43,7 @@ const Dashboard = () => {
     return (
         <div className="min-h-screen" style={{ backgroundColor: "#F6F6F6" }}>
             {/* Navbar */}
-            <div className="px-8 py-4 flex items-center justify-between" style={{ backgroundColor: "#303030" }}>
+            <div className="px-4 md:px-8 py-4 flex items-center justify-between" style={{ backgroundColor: "#303030" }}>
                 <h1 className="text-xl font-bold" style={{ color: "#CBE86A" }}>
                     Collabify
                 </h1>
@@ -57,25 +57,25 @@ const Dashboard = () => {
             </div>
 
             {/* Content */}
-            <div className="max-w-4xl mx-auto px-8 py-12">
-                <h2 className="text-3xl font-bold mb-2" style={{ color: "#303030" }}>My Documents</h2>
+            <div className="max-w-4xl mx-auto px-4 md:px-8 py-8 md:py-12">
+                <h2 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: "#303030" }}>My Documents</h2>
                 <p className="mb-8 text-sm" style={{ color: "#9E9E9E" }}>Create and collaborate on documents in real-time</p>
 
                 {/* Create Document */}
-                <div className="flex gap-3 mb-10">
+                <div className="flex flex-col sm:flex-row gap-3 mb-10">
                     <input
                         type="text"
                         placeholder="New document name..."
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && createDocument()}
-                        className="flex-1 p-3 rounded-lg border outline-none"
+                        className="flex-1 p-3 rounded-lg border outline-none w-full"
                         style={{ backgroundColor: "#fff", borderColor: "#E4E4E4", color: "#303030" }}
                     />
                     <button
                         onClick={createDocument}
                         disabled={loading}
-                        className="px-6 py-3 rounded-lg font-semibold transition disabled:opacity-50"
+                        className="w-full sm:w-auto px-6 py-3 rounded-lg font-semibold transition disabled:opacity-50"
                         style={{ backgroundColor: "#CBE86A", color: "#303030" }}
                     >
                         {loading ? "..." : "+ New"}
