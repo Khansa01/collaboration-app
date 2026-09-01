@@ -57,14 +57,13 @@ func main() {
 	hub := service.NewHub()
 	wsHub := handler.NewWSHub()
 	wsHandler := handler.NewWebSocketHandler(wsHub)
-	presenceHub := service.NewPresenceHub()
+	grpcPresenceHub := service.NewPresenceHub()
 
 	// Service
 	authService := service.NewAuthService(userRepo)
 	docService := service.NewDocumentService(docRepo)
 	collabService := service.NewCollaborationService(hub, docRepo)
-	presenceService := service.NewPresenceService(presenceHub)
-
+	presenceService := service.NewPresenceService(grpcPresenceHub)
 	// Handler
 	authHandler := handler.NewAuthHandler(authService)
 	docHandler := handler.NewDocumentHandler(docService)
@@ -85,7 +84,10 @@ func main() {
 
 	presencePath, presenceH := presencev1connect.NewPresenceServiceHandler(presenceHandler)
 	mux.Handle(presencePath, presenceH)
+	presenceWSHub := handler.NewPresenceHub()
+	presenceWSHandler := handler.NewPresenceWSHandler(presenceWSHub, wsHub)
 	mux.Handle("/ws/", wsHandler)
+	mux.Handle("/presence/", presenceWSHandler)
 
 	// Middleware chain
 	chain := corsMiddleware(middleware.JWTMiddleware(mux))
