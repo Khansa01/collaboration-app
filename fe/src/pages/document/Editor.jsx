@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -20,6 +20,7 @@ const Editor = () => {
     const [connected, setConnected] = useState(false);
     const ydocRef = useRef(new Y.Doc());
     const providerRef = useRef(null);
+    const lastSavedRef = useRef(null);
 
     useEffect(() => {
         const ydoc = ydocRef.current;
@@ -65,7 +66,7 @@ const Editor = () => {
         ],
         editorProps: {
             attributes: {
-                class: "outline-none min-h-screen p-12 max-w-3xl mx-auto",
+                class: "outline-none min-h-screen p-4 md:p-12 max-w-3xl mx-auto",
                 style: "color: #303030; font-size: 16px; line-height: 1.8;",
             },
         },
@@ -105,12 +106,43 @@ const Editor = () => {
         }
     };
 
+    const autoSave = useCallback(async () => {
+        if (!editor) return;
+        const content = JSON.stringify(editor.getJSON());
+        if (content === lastSavedRef.current) return; // skip kalau ga ada perubahan
+        try {
+            setSaving(true);
+            await documentClient.updateDocument({ id, content });
+            lastSavedRef.current = content;
+        } catch (err) {
+            console.error("Auto-save error:", err);
+        } finally {
+            setSaving(false);
+        }
+    }, [editor, id]);
+
+    useEffect(() => {
+        if (!editor) return;
+        const timer = { current: null };
+
+        const handleUpdate = () => {
+            clearTimeout(timer.current);
+            timer.current = setTimeout(autoSave, 2000);
+        };
+
+        editor.on("update", handleUpdate);
+        return () => {
+            editor.off("update", handleUpdate);
+            clearTimeout(timer.current);
+        };
+    }, [editor, autoSave]);
+
     if (!editor) return null;
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: "#F6F6F6" }}>
             {/* Navbar */}
-            <div className="px-8 py-4 flex items-center justify-between sticky top-0 z-10" style={{ backgroundColor: "#303030" }}>
+            <div className="px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-10" style={{ backgroundColor: "#303030" }}>
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate("/dashboard")}
@@ -120,10 +152,10 @@ const Editor = () => {
                         ← Back
                     </button>
                     <span style={{ color: "#9E9E9E" }}>|</span>
-                    <h1 className="font-semibold" style={{ color: "#F6F6F6" }}>{title}</h1>
+                    <h1 className="font-semibold truncate max-w-[120px] md:max-w-none" style={{ color: "#F6F6F6" }}>{title}</h1>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 md:gap-4">
                     <PresenceAvatars docId={id} />
                     <span
                         className="text-xs px-3 py-1 rounded-full font-medium"
@@ -141,7 +173,7 @@ const Editor = () => {
                         className="px-4 py-2 rounded-lg text-sm font-semibold transition disabled:opacity-50"
                         style={{ backgroundColor: "#CBE86A", color: "#303030" }}
                     >
-                        {saving ? "Saving..." : "Save"}
+                        {saving ? "Saving..." : "Saved ✓"}
                     </button>
                 </div>
             </div>
