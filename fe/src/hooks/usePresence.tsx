@@ -1,8 +1,4 @@
-import { create } from "@bufbuild/protobuf";
 import { useEffect, useRef, useState } from "react";
-import { createClient } from "@connectrpc/connect";
-import { createConnectTransport } from "@connectrpc/connect-web";
-import { PresenceRequestSchema, PresenceService, UserPresenceSchema } from "../proto/presence_pb";
 import useAuthStore from "../store/authStore";
 
 interface User {
@@ -18,58 +14,46 @@ const getColor = (userId: string) => {
   return COLORS[hash % COLORS.length];
 };
 
+const WS_URL = (import.meta as any).env?.VITE_WS_URL ?? "ws://localhost:8080";
+
 const usePresence = (docId: string) => {
   const { token, user } = useAuthStore();
   const [users, setUsers] = useState<User[]>([]);
-  const streamRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     if (!docId || !token || !user) return;
 
-    const transport = createConnectTransport({
-      baseUrl: (import.meta as any).env?.VITE_API_URL ?? "http://localhost:8080",
-    });
+    const connect = () => {
+      const ws = new WebSocket(`${WS_URL}/presence/${docId}?token=${token}`);
+      wsRef.current = ws;
 
-    const client = createClient(PresenceService, transport);
+      ws.onopen = () => {
+        ws.send(JSON.stringify({
+          type: "join",
+          userId: user.userId,
+          name: user.name,
+        }));
+      };
 
-    let cancelled = false;
+      ws.onmessage = (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          if (data.type === "presence") {
+            setUsers(data.users);
+          }
+        } catch {}
+      };
 
-    const start = async () => {
-      try {
-        const stream = client.syncPresence(
-        (async function* () {
-            yield create(PresenceRequestSchema, {
-            docId,
-            presence: create(UserPresenceSchema, {
-                userId: user.userId,
-                docId,
-                name: user.name,
-                isOnline: true,
-            }),
-            });
-            await new Promise((_, reject) => {
-            streamRef.current = setInterval(() => {
-                if (cancelled) reject(new Error("cancelled"));
-            }, 5000) as unknown as ReturnType<typeof setTimeout>;
-            });
-        })(),
-        { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        for await (const res of stream) {
-          if (cancelled) break;
-          setUsers(res.users as User[]);
-        }
-      } catch {
-        if (!cancelled) setTimeout(start, 3000); // reconnect
-      }
+      ws.onclose = () => {
+        setTimeout(connect, 3000);
+      };
     };
 
-    start();
+    connect();
 
     return () => {
-      cancelled = true;
-      if (streamRef.current) clearInterval(streamRef.current as unknown as number);
+      wsRef.current?.close();
     };
   }, [docId, token, user]);
 
