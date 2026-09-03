@@ -8,6 +8,8 @@ import { WebsocketProvider } from "y-websocket";
 import { documentClient } from "../../lib/client";
 import useAuthStore from "../../store/authStore";
 import PresenceAvatars from "../../components/PresenceAvatars";
+import Underline from "@tiptap/extension-underline";
+import Toolbar from "../../components/Toolbar";
 
 const WS_URL = import.meta.env.VITE_WS_URL ?? "ws://localhost:8080";
 
@@ -61,8 +63,11 @@ const Editor = () => {
 
     const editor = useEditor({
         extensions: [
-            StarterKit.configure({ history: false }),
+            StarterKit.configure({
+                history: false,
+            }),
             Collaboration.configure({ document: ydocRef.current }),
+            Underline,
         ],
         editorProps: {
             attributes: {
@@ -71,25 +76,6 @@ const Editor = () => {
             },
         },
     });
-
-    useEffect(() => {
-        if (!editor || !id) return;
-
-        const loadContent = async () => {
-            try {
-                const res = await documentClient.getDocument({ id });
-                setTitle(res.document?.title || "");
-                if (res.document?.content) {
-                    const content = JSON.parse(res.document.content);
-                    editor.commands.setContent(content);
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        loadContent();
-    }, [editor, id]);
 
     if (!editor) return null;
 
@@ -177,6 +163,9 @@ const Editor = () => {
                     </button>
                 </div>
             </div>
+
+            {/* Toolbar */}
+            <Toolbar editor={editor} />
 
             {/* Editor */}
             <div style={{ backgroundColor: "#fff", minHeight: "calc(100vh - 60px)" }}>
