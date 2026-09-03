@@ -100,3 +100,12 @@ func (r *DocumentRepository) UpdateDocument(ctx context.Context, doc Document) (
 
 	return result, nil
 }
+
+func (r *DocumentRepository) DeleteDocument(ctx context.Context, id string) error {
+	query := `DELETE FROM documents WHERE id = $1`
+	_, err := r.db.Exec(ctx, query, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete document: %w", err)
+	}
+	return nil
+}

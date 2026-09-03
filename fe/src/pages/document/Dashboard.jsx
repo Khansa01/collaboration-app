@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { documentClient } from "../../lib/client";
 import useAuthStore from "../../store/authStore";
+import { documentClient, deleteDocument } from "../../lib/client";
 
 const Dashboard = () => {
     const [documents, setDocuments] = useState([]);
@@ -94,11 +94,32 @@ const Dashboard = () => {
                         {documents.map((doc) => (
                             <div
                                 key={doc.id}
-                                onClick={() => navigate(`/document/${doc.id}`)}
-                                className="p-5 rounded-xl border cursor-pointer transition hover:shadow-md"
+                                className="p-5 rounded-xl border flex items-center justify-between transition hover:shadow-md"
                                 style={{ backgroundColor: "#fff", borderColor: "#E4E4E4", borderLeft: "4px solid #CBE86A" }}
                             >
-                                <h3 className="font-semibold" style={{ color: "#303030" }}>{doc.title}</h3>
+                                <h3
+                                    className="font-semibold cursor-pointer"
+                                    style={{ color: "#303030" }}
+                                    onClick={() => navigate(`/document/${doc.id}`)}
+                                >
+                                    {doc.title}
+                                </h3>
+                                <button
+                                    onClick={async (e) => {
+                                        e.stopPropagation();
+                                        if (!confirm(`Hapus "${doc.title}"?`)) return;
+                                        try {
+                                            await deleteDocument(doc.id);
+                                            fetchDocuments();
+                                        } catch (err) {
+                                            console.error(err);
+                                        }
+                                    }}
+                                    className="text-sm px-3 py-1 rounded-lg transition"
+                                    style={{ color: "#9E9E9E" }}
+                                >
+                                    🗑
+                                </button>
                             </div>
                         ))}
                     </div>

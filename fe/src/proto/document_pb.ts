@@ -229,6 +229,11 @@ export const DocumentService: GenService<{
     input: typeof UpdateDocumentRequestSchema;
     output: typeof UpdateDocumentResponseSchema;
   },
+  deleteDocument: {
+      methodKind: "unary";
+      input: typeof GetDocumentRequestSchema;
+      output: typeof GetDocumentResponseSchema;
+  },
 }> = /*@__PURE__*/
   serviceDesc(file_document, 0);
 
