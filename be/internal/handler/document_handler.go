@@ -97,3 +97,17 @@ func (h *DocumentHandler) UpdateDocument(ctx context.Context, req *connect.Reque
 		},
 	}), nil
 }
+
+func (h *DocumentHandler) DeleteDocument(ctx context.Context, req *connect.Request[documentv1.GetDocumentRequest]) (*connect.Response[documentv1.GetDocumentResponse], error) {
+	ownerID := req.Header().Get("X-User-ID")
+	if ownerID == "" {
+		return nil, connect.NewError(connect.CodeUnauthenticated, nil)
+	}
+
+	err := h.docService.DeleteDocument(ctx, req.Msg.Id)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	return connect.NewResponse(&documentv1.GetDocumentResponse{}), nil
+}

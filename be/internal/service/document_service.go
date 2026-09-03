@@ -46,3 +46,7 @@ func (s *DocumentService) UpdateDocument(ctx context.Context, id string, content
 		Content: content,
 	})
 }
+
+func (s *DocumentService) DeleteDocument(ctx context.Context, id string) error {
+	return s.docRepo.DeleteDocument(ctx, id)
+}

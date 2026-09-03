@@ -20,3 +20,18 @@ const getTransport = () => createConnectTransport({
 
 export const authClient = createClient(AuthService, getTransport());
 export const documentClient = createClient(DocumentService, getTransport());
+
+export const deleteDocument = async (id: string) => {
+  const token = useAuthStore.getState().token;
+  const baseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
+  const res = await fetch(`${baseUrl}/document.v1.DocumentService/DeleteDocument`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify({ id }),
+  });
+  if (!res.ok) throw new Error("Failed to delete document");
+  return res.json();
+};
