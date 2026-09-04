@@ -109,3 +109,12 @@ func (r *DocumentRepository) DeleteDocument(ctx context.Context, id string) erro
 	}
 	return nil
 }
+
+func (r *DocumentRepository) RenameDocument(ctx context.Context, id, title string) error {
+	query := `UPDATE documents SET title = $1, updated_at = NOW() WHERE id = $2`
+	_, err := r.db.Exec(ctx, query, title, id)
+	if err != nil {
+		return fmt.Errorf("failed to rename document: %w", err)
+	}
+	return nil
+}

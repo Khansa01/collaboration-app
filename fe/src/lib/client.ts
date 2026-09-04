@@ -35,3 +35,17 @@ export const deleteDocument = async (id: string) => {
   if (!res.ok) throw new Error("Failed to delete document");
   return res.json();
 };
+
+export const renameDocument = async (id: string, title: string) => {
+  const token = useAuthStore.getState().token;
+  const baseUrl = (import.meta as any).env?.VITE_API_URL ?? "http://localhost:8080";
+  const res = await fetch(`${baseUrl}/api/rename/${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify({ title }),
+  });
+  if (!res.ok) throw new Error("Failed to rename document");
+};
