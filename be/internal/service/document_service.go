@@ -50,3 +50,7 @@ func (s *DocumentService) UpdateDocument(ctx context.Context, id string, content
 func (s *DocumentService) DeleteDocument(ctx context.Context, id string) error {
 	return s.docRepo.DeleteDocument(ctx, id)
 }
+
+func (s *DocumentService) RenameDocument(ctx context.Context, id, title string) error {
+	return s.docRepo.RenameDocument(ctx, id, title)
+}

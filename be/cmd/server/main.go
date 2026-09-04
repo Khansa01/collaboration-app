@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -88,6 +89,22 @@ func main() {
 	presenceWSHandler := handler.NewPresenceWSHandler(presenceWSHub, wsHub)
 	mux.Handle("/ws/", wsHandler)
 	mux.Handle("/presence/", presenceWSHandler)
+
+	mux.HandleFunc("/api/rename/", func(w http.ResponseWriter, r *http.Request) {
+		id := r.URL.Path[len("/api/rename/"):]
+		var body struct {
+			Title string `json:"title"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			http.Error(w, "bad request", 400)
+			return
+		}
+		if err := docService.RenameDocument(r.Context(), id, body.Title); err != nil {
+			http.Error(w, "failed to rename", 500)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	})
 
 	// Middleware chain
 	chain := corsMiddleware(middleware.JWTMiddleware(mux))

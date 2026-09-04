@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../store/authStore";
-import { documentClient, deleteDocument } from "../../lib/client";
+import { documentClient, deleteDocument, renameDocument } from "../../lib/client";
 
 const Dashboard = () => {
     const [documents, setDocuments] = useState([]);
@@ -39,6 +39,9 @@ const Dashboard = () => {
         }
         fetchDocuments();
     }, [token]);
+
+    const [editingId, setEditingId] = useState(null);
+    const [editingTitle, setEditingTitle] = useState("");
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: "#F6F6F6" }}>
@@ -97,29 +100,63 @@ const Dashboard = () => {
                                 className="p-5 rounded-xl border flex items-center justify-between transition hover:shadow-md"
                                 style={{ backgroundColor: "#fff", borderColor: "#E4E4E4", borderLeft: "4px solid #CBE86A" }}
                             >
-                                <h3
-                                    className="font-semibold cursor-pointer"
-                                    style={{ color: "#303030" }}
-                                    onClick={() => navigate(`/document/${doc.id}`)}
-                                >
-                                    {doc.title}
-                                </h3>
-                                <button
-                                    onClick={async (e) => {
-                                        e.stopPropagation();
-                                        if (!confirm(`Hapus "${doc.title}"?`)) return;
-                                        try {
-                                            await deleteDocument(doc.id);
-                                            fetchDocuments();
-                                        } catch (err) {
-                                            console.error(err);
-                                        }
-                                    }}
-                                    className="text-sm px-3 py-1 rounded-lg transition"
-                                    style={{ color: "#9E9E9E" }}
-                                >
-                                    🗑
-                                </button>
+                                {editingId === doc.id ? (
+                                    <input
+                                        autoFocus
+                                        value={editingTitle}
+                                        onChange={(e) => setEditingTitle(e.target.value)}
+                                        onBlur={() => {
+                                            if (editingTitle && editingTitle !== doc.title) {
+                                                renameDocument(doc.id, editingTitle).then(fetchDocuments).catch(console.error);
+                                            }
+                                            setEditingId(null);
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") e.target.blur();
+                                            if (e.key === "Escape") setEditingId(null);
+                                        }}
+                                        className="font-semibold bg-transparent border-b outline-none flex-1"
+                                        style={{ color: "#303030", borderColor: "#CBE86A" }}
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                ) : (
+                                    <h3
+                                        className="font-semibold cursor-pointer flex-1"
+                                        style={{ color: "#303030" }}
+                                        onClick={() => navigate(`/document/${doc.id}`)}
+                                    >
+                                        {doc.title}
+                                    </h3>
+                                )}
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setEditingId(doc.id);
+                                            setEditingTitle(doc.title);
+                                        }}
+                                        className="text-sm px-3 py-1 rounded-lg transition"
+                                        style={{ color: "#9E9E9E" }}
+                                    >
+                                        ✏️
+                                    </button>
+                                    <button
+                                        onClick={async (e) => {
+                                            e.stopPropagation();
+                                            if (!confirm(`Hapus "${doc.title}"?`)) return;
+                                            try {
+                                                await deleteDocument(doc.id);
+                                                fetchDocuments();
+                                            } catch (err) {
+                                                console.error(err);
+                                            }
+                                        }}
+                                        className="text-sm px-3 py-1 rounded-lg transition"
+                                        style={{ color: "#9E9E9E" }}
+                                    >
+                                        🗑
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>
