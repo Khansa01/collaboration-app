@@ -61,13 +61,19 @@ func (h *WSHub) Leave(docID string, client *WSClient) {
 func (h *WSHub) Broadcast(docID string, sender *WSClient, msg []byte) {
 	h.mu.RLock()
 	defer h.mu.RUnlock()
+
+	// Yjs message types: 0=sync, 1=awareness, 3=auth, 4=query_awareness
+	// Setelah y-websocket wrapping, byte pertama adalah message type
+	isAwareness := len(msg) > 1 && (msg[0] == 1 || msg[0] == 4)
+
 	for client := range h.rooms[docID] {
-		if client != sender {
-			select {
-			case client.send <- msg:
-			default:
-				close(client.send)
-			}
+		if client == sender && !isAwareness {
+			continue
+		}
+		select {
+		case client.send <- msg:
+		default:
+			close(client.send)
 		}
 	}
 }
@@ -305,6 +311,9 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
 			break
+		}
+		if len(msg) > 0 {
+			log.Printf("msg byte[0]=%d len=%d", msg[0], len(msg))
 		}
 		h.hub.Broadcast(docID, client, msg)
 	}
