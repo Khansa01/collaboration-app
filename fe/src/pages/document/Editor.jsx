@@ -10,18 +10,20 @@ import useAuthStore from "../../store/authStore";
 import PresenceAvatars from "../../components/PresenceAvatars";
 import Underline from "@tiptap/extension-underline";
 import Toolbar from "../../components/Toolbar";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 
 const WS_URL = import.meta.env.VITE_WS_URL ?? "ws://localhost:8080";
 
 const Editor = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { token } = useAuthStore();
+    const { token, user } = useAuthStore();
     const [title, setTitle] = useState("");
     const [saving, setSaving] = useState(false);
     const [connected, setConnected] = useState(false);
     const ydocRef = useRef(new Y.Doc());
     const providerRef = useRef(null);
+    const [providerReady, setProviderReady] = useState(false);
     const lastSavedRef = useRef(null);
 
     useEffect(() => {
@@ -40,6 +42,7 @@ const Editor = () => {
         );
 
         providerRef.current = provider;
+        setProviderReady(true);
 
         provider.on("status", ({ status }) => {
             setConnected(status === "connected");
@@ -65,9 +68,23 @@ const Editor = () => {
         extensions: [
             StarterKit.configure({
                 history: false,
+                underline: false,
             }),
             Collaboration.configure({ document: ydocRef.current }),
             Underline,
+            ...(providerReady ? [CollaborationCursor.configure({
+                provider: (() => {
+                    return providerRef.current;
+                })(),
+                user: {
+                    name: user?.name ?? "Anonymous",
+                    color: user?.userId
+                        ? ["#F6A86A", "#6AB4F6", "#F66A8A", "#A86AF6"][
+                        user.userId.charCodeAt(0) % 4
+                        ]
+                        : "#CBE86A",
+                },
+            })] : []),
         ],
         editorProps: {
             attributes: {
